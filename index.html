@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>In The Pipe 5 x 5</title>
+<!-- <link rel="stylesheet" type="text/css" href="main.css"> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.7.2-rc.0/web3.min.js
+
+
+
+"></script>
+</head>
+<body>
+    <div class="container">
+<h1>Bet Over / Under On The BTC Price</h1>
+<h2>Recent Winner: <span id="recentWinner"></span></h2>
+
+<div id="bettingPriceWrapper">
+ Betting price is: <span id="bettingPrice"></span>
+</div>
+<div id="nextBetTime">
+  Betting will end at: <span id="bettingEndTime"></span>
+</div>
+<div id="">
+  Current Time: <span id="currentTime"></span>
+</div>
+
+<h2 id="instructor"></h2>
+<label for="name" class="col-lg-2 control-label">Current Under Bettor</label>: <span id="underBettor"></span>
+<br /><br />
+<button id="takeUnderBet">Take Under Bet</button>
+<!--        <input id="name" type="text"> -->
+
+
+<br /><br />
+<label for="name" class="col-lg-2 control-label">Current Over Bettor</label>: <span id="overBettor"></span>
+<br /><br />
+      <!--  <input id="age" type="text"> -->
+<button id="takeOverBet">Take Over Bet</button>
+</div>
+<br /><br />
+<div>
+  Note:  Zero or a bunch of zeros means this value is not set yet and open for anyone.  First bettor sets the price for the current bet at the BTC price at the time of the bet.
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script>
+if (typeof web3 !== 'undefined') {
+        console.log("Ive been injected");
+            web3 = new Web3(web3.currentProvider);
+        } else {
+            // set the provider you want from Web3.providers
+            console.log("grab my local ganache");
+            web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        }
+    // Request account access if needed
+
+web3.eth.getAccounts().then(accounts => console.log(accounts));
+
+var myAccounts = web3.eth.getAccounts()
+console.log("hello account the wrong way: ignore below");
+console.log(myAccounts[0]);
+
+getCurrentAccount = async () => {
+  accounts = await web3.eth.getAccounts();
+  print("current account another approach");
+  print(accounts[0]);
+  return accounts[0];
+}
+
+  var myaccount = web3.eth.accounts[0];
+  console.log("pre contract-- default account  probably wrong");
+  console.log(myaccount);
+  
+  
+  var  abi = 
+    [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "updateInterval",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "_priceFeed",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "bettingPool",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "bettingPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "betting_state",
+      "outputs": [
+        {
+          "internalType": "enum TimedBet.BETTING_STATE",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "name": "checkUpkeep",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "upkeepNeeded",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "counter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getDecimals",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getEntranceFee",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "interval",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "lastTimeStamp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "overPlayer",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "name": "performUpkeep",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "priceFeed",
+      "outputs": [
+        {
+          "internalType": "contract AggregatorV3Interface",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "recentWinner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "retrieveBetState",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "startBet",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "takeOverBet",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "takeUnderBet",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "underPlayer",
+      "outputs": [
+        {
+          "internalType": "address payable",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "winnersList",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+    ;
+var contractAddress = '0x24F3B964D569AD4BF5816d21C1EF002e8a89507E';
+
+//  var  MyContract = new web3.eth.Contract(myABI).at(contractAddress);
+
+//var myAbi = web3.eth.contract(abi);
+//var myfunction = myAbi.at(contractAddress);
+
+
+var TimedBet = new web3.eth.Contract(abi, contractAddress);
+console.log("logging contract address")
+console.log(TimedBet.contractAddress)
+
+
+  //console.log(Coursetro);
+  //Coursetro.getInstructor
+  var betState = TimedBet.methods.retrieveBetState().call();
+  console.log("trying to print bet state");
+  console.log(betState);
+
+ 
+  var recentWinner = TimedBet.methods.recentWinner().call().then(function(result){
+        console.log("last Winner");
+    console.log(result);
+    $("#recentWinner").text(result);
+  });
+  
+  var bettingPrice = TimedBet.methods.bettingPrice().call().then(function(result){
+        console.log("betting price");
+    console.log(result);
+    var bettingPriceDecimal = result / Math.pow(10, 18);
+    $("#bettingPrice").text(bettingPriceDecimal);
+  });
+
+  var timestamp = TimedBet.methods.lastTimeStamp().call().then(function(result){
+      console.log("last time stamp");
+      console.log(result);
+      var interval = TimedBet.methods.interval().call().then(function(intervalResult){
+        console.log("intervalResult");
+        console.log(intervalResult);
+        var nextBetTime = parseInt(result) + parseInt(intervalResult);
+        console.log(nextBetTime);
+        var newDate = new Date();
+        
+        var nowTimeReadable = newDate.toUTCString();
+        var nextNewDate = new Date();
+        nextNewDate.setTime(nextBetTime * 1000);
+        dateString = nextNewDate.toUTCString();
+
+        $("#bettingEndTime").text(dateString);
+        $("#currentTime").text(nowTimeReadable);
+        
+      });
+    
+  });
+
+  var underBettor = TimedBet.methods.underPlayer().call().then(function(result){
+      $("#underBettor").text(result);
+
+  });
+
+  var overBettor = TimedBet.methods.overPlayer().call().then(function(result){
+      $("#overBettor").text(result);
+
+  });
+
+  $("#takeUnderBet").click(async function() {
+    
+    // let acct = (await web3.eth.getAccounts())[0];
+    // console.log("current account inside click, the correct way i think");
+    // console.log(acct);
+    // TimedBet.methods.takeUnderBet().send({ from: acct} );
+    await window.ethereum.enable();
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0];
+          console.log(account);
+
+        // get the fee.
+        var fee = TimedBet.methods.getEntranceFee().call().then(function(resultFee){
+            TimedBet.methods.takeUnderBet().send({ from: account, value: resultFee} );    
+
+        });
+
+          
+
+  });
+
+  $("#takeOverBet").click(async function() {
+    console.log("taking over bet");
+    await window.ethereum.enable();
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0];
+          console.log(account);
+
+        // get the fee.
+        var fee = TimedBet.methods.getEntranceFee().call().then(function(resultFee){
+            console.log("Result Fee::");
+            console.log(resultFee);
+            TimedBet.methods.takeOverBet().send({ from: account, value: resultFee} ).then(function(receipt){
+                // will be fired once the receipt is mined
+                // reload the page
+                location.reload();
+              });
+            ;    
+
+        });
+
+          
+
+  });
+
+
+
+
+
+
+$("#mybutton").click(async function() {
+    var n = $("#name").val();
+    console.log('name');
+    console.log(n);
+    var a = $("#age").val();
+    console.log(a);
+    
+    let acct = (await web3.eth.getAccounts())[0];
+    console.log("current account inside click, the correct way i think");
+    console.log(acct);
+            Coursetro.methods.setInstructor(n, a).send({ from: acct} );
+
+        });
+</script>
+</body>
+</html>
